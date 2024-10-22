@@ -1,6 +1,6 @@
-import Organization from "../classes/organization.js";
+import Organization from "../src/classes/organization";
 import { readFileSync } from "fs";
-import Repository from "../classes/repository.js";
+import Repository from "../src/classes/repository";
 
 const fixtureGithubResponse = JSON.parse(
   readFileSync("./tests/github-org-fixture.json", "utf8"),
@@ -9,7 +9,7 @@ const fixtureGithubResponse = JSON.parse(
 const ORG = "stackbuilders";
 
 describe("Organization", () => {
-  let organization;
+  let organization: Organization;
 
   describe("#parseRepositories", () => {
     beforeEach(() => {

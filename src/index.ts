@@ -1,6 +1,6 @@
-import Organization from "./classes/organization.js";
-import { mainInquirerSelect, waitForInput } from "./utils.js";
-import GithubAdapter from "./classes/github-adapter.js";
+import Organization from "./classes/organization";
+import { mainInquirerSelect, waitForInput } from "./utils";
+import GithubAdapter from "./classes/github-adapter";
 
 const ORG = "stackbuilders";
 const MIN_STARS = 5;

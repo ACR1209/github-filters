@@ -13,7 +13,11 @@ export async function waitForInput(
   rl.close();
 }
 
-export const mainInquirerSelect = (ORG, MIN_STARS, LAST_UPDATED_COUNT) =>
+export const mainInquirerSelect = (
+  ORG: string,
+  MIN_STARS: number,
+  LAST_UPDATED_COUNT: number,
+) =>
   select({
     message: "Select an action to do",
     choices: [

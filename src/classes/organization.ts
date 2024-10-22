@@ -1,12 +1,16 @@
-import Repository from "./repository.js";
+import { GithubApiRepository } from "./github-adapter";
+import Repository from "./repository";
 
 class Organization {
-  constructor(name) {
+  name: string;
+  repositories: Repository[];
+
+  constructor(name: string) {
     this.name = name;
     this.repositories = [];
   }
 
-  async parseRepositories(jsonData) {
+  async parseRepositories(jsonData: GithubApiRepository[]) {
     this.repositories = jsonData.map(
       (repo) =>
         new Repository(
@@ -17,7 +21,7 @@ class Organization {
     );
   }
 
-  getRepositoryWithEqualOrGreaterAmountOfStars(amountOfStars) {
+  getRepositoryWithEqualOrGreaterAmountOfStars(amountOfStars: number) {
     return this.repositories.filter(
       (repository) => repository.stars >= amountOfStars,
     );
@@ -31,10 +35,12 @@ class Organization {
   }
 
   orderRepositoriesByUpdatedDate() {
-    return this.repositories.toSorted((a, b) => b.updatedAt - a.updatedAt);
+    return this.repositories.toSorted(
+      (a, b) => b.updatedAt.getTime() - a.updatedAt.getTime(),
+    );
   }
 
-  getTailOfRepositories(amountOfRepositories) {
+  getTailOfRepositories(amountOfRepositories: number) {
     return this.orderRepositoriesByUpdatedDate().slice(0, amountOfRepositories);
   }
 }

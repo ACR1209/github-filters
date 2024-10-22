@@ -1,6 +1,5 @@
 export default {
-  transform: {
-    "^.+\\.m?[tj]sx?$": "babel-jest",
-  },
-  moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
+  preset: "ts-jest",
+  testEnvironment: "node",
+  testMatch: ["**/tests/**/*.test.ts"],
 };

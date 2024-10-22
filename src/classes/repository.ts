@@ -1,5 +1,9 @@
 class Repository {
-  constructor(name, stars, updatedAt) {
+  name: string;
+  stars: number;
+  updatedAt: Date;
+
+  constructor(name: string, stars: number, updatedAt: Date) {
     this.name = name;
     this.updatedAt = updatedAt;
     this.stars = stars;

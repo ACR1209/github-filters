@@ -1,14 +1,20 @@
+export interface GithubApiRepository {
+  name: string;
+  updated_at: string;
+  stargazers_count: number;
+}
+
 class GithubAdapter {
-  static async fetchOrgRepositoriesPage(org, page = 1, per_page = 30) {
+  static async fetchOrgRepositoriesPage(org: string, page = 1, per_page = 30) {
     const response = await fetch(
       `https://api.github.com/orgs/${org}/repos?page=${page}&per_page=${per_page}`,
     );
-    const data = await response.json();
+    const data = (await response.json()) as GithubApiRepository[];
     return data;
   }
 
-  static async fetchAllOrgRepositories(org) {
-    let res = [];
+  static async fetchAllOrgRepositories(org: string) {
+    let res: GithubApiRepository[] = [];
 
     let page = 1;
     let per_page = 100;
