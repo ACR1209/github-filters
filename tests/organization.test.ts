@@ -6,6 +6,10 @@ const fixtureGithubResponse = JSON.parse(
   readFileSync("./tests/github-org-fixture.json", "utf8"),
 );
 
+const fixtureNoConflictingStarsGithubResponse = JSON.parse(
+  readFileSync("./tests/github-org-fixture-stars-no-conflict.json", "utf8"),
+);
+
 const ORG = "stackbuilders";
 
 describe("Organization", () => {
@@ -185,6 +189,95 @@ describe("Organization", () => {
       const amountOfRepositories = 5;
       const res = organization.getTailOfRepositories(amountOfRepositories);
       const expectedRepos = [5, 3, 4, 2, 1];
+
+      expect(res.length).toBe(amountOfRepositories);
+      res.forEach((repo, index) => {
+        expect(repo.name).toBe(`Test ${expectedRepos[index]}`);
+      });
+    });
+  });
+
+  describe("#orderRepositoriesByStars", () => {
+    beforeEach(() => {
+      organization = new Organization(ORG);
+      organization.parseRepositories(fixtureGithubResponse);
+    });
+
+    test("should return an array of repositories", () => {
+      const res = organization.orderRepositoriesByStars();
+
+      expect(res).toBeInstanceOf(Array);
+
+      res.forEach((repo) => {
+        expect(repo).toBeInstanceOf(Repository);
+      });
+    });
+
+    test("should not modify repositories stored in memory", () => {
+      const currentSize = organization.repositories.length;
+      const currentRepos = organization.repositories.slice();
+
+      const res = organization.orderRepositoriesByStars();
+
+      expect(organization.repositories).toEqual(currentRepos);
+      expect(res).not.toEqual(currentRepos);
+    });
+
+    test("should sort by updated date if same number of stars", () => {
+      const res = organization.orderRepositoriesByStars();
+      const expectedOrder = [1, 6, 3, 5, 4, 2];
+
+      res.forEach((repo, index) => {
+        expect(repo.name).toBe(`Test ${expectedOrder[index]}`);
+      });
+    });
+
+    test("should sort the repositories given their stars", () => {
+      organization = new Organization(ORG);
+      organization.parseRepositories(fixtureNoConflictingStarsGithubResponse);
+
+      const res = organization.orderRepositoriesByStars();
+      const expectedOrder = [1, 6, 3, 5, 2, 4];
+
+      res.forEach((repo, index) => {
+        expect(repo.name).toBe(`Test ${expectedOrder[index]}`);
+      });
+    });
+  });
+
+  describe("#getMostPopularRepositories", () => {
+    beforeEach(() => {
+      organization = new Organization(ORG);
+      organization.parseRepositories(fixtureGithubResponse);
+    });
+
+    test("should return an array of repositories", () => {
+      const amountOfRepositories = 5;
+
+      const res = organization.getMostPopularRepositories(amountOfRepositories);
+
+      expect(res).toBeInstanceOf(Array);
+
+      res.forEach((repo) => {
+        expect(repo).toBeInstanceOf(Repository);
+      });
+    });
+
+    test("should not modify repositories stored in memory", () => {
+      const currentSize = organization.repositories.length;
+      const currentRepos = organization.repositories.slice();
+      const amountOfRepositories = 5;
+
+      const res = organization.getMostPopularRepositories(amountOfRepositories);
+
+      expect(organization.repositories).toEqual(currentRepos);
+      expect(res).not.toEqual(currentRepos);
+    });
+
+    test("should correctly get the top n repositories given their stars", () => {
+      const amountOfRepositories = 5;
+      const res = organization.getMostPopularRepositories(amountOfRepositories);
+      const expectedRepos = [1, 6, 3, 5, 4];
 
       expect(res.length).toBe(amountOfRepositories);
       res.forEach((repo, index) => {

@@ -43,6 +43,19 @@ class Organization {
   getTailOfRepositories(amountOfRepositories: number) {
     return this.orderRepositoriesByUpdatedDate().slice(0, amountOfRepositories);
   }
+
+  orderRepositoriesByStars() {
+    return this.repositories.toSorted((a, b) => {
+      if (b.stars === a.stars) {
+        return b.updatedAt.getTime() - a.updatedAt.getTime();
+      }
+      return b.stars - a.stars;
+    });
+  }
+
+  getMostPopularRepositories(amountOfRepositories: number) {
+    return this.orderRepositoriesByStars().slice(0, amountOfRepositories);
+  }
 }
 
 export default Organization;

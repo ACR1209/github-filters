@@ -17,6 +17,7 @@ export const mainInquirerSelect = (
   ORG: string,
   MIN_STARS: number,
   LAST_UPDATED_COUNT: number,
+  HEAD_COUNT: number,
 ) =>
   select({
     message: "Select an action to do",
@@ -35,6 +36,11 @@ export const mainInquirerSelect = (
         name: "Sum of all repositories",
         value: "sumAllRepositories",
         description: `Get the sum of all the stars of repositories from ${ORG}`,
+      },
+      {
+        name: `Get the top ${HEAD_COUNT} repositories with more stars`,
+        value: "mostPopularRepositories",
+        description: `Get the top ${HEAD_COUNT} repositories with more stars from ${ORG}`,
       },
       new Separator(),
       {
