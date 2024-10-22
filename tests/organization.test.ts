@@ -10,6 +10,10 @@ const fixtureNoConflictingStarsGithubResponse = JSON.parse(
   readFileSync("./tests/github-org-fixture-stars-no-conflict.json", "utf8"),
 );
 
+const fixtureTitlesGithubResponse = JSON.parse(
+  readFileSync("./tests/github-org-fixture-titles.json", "utf8"),
+);
+
 const ORG = "stackbuilders";
 
 describe("Organization", () => {
@@ -282,6 +286,169 @@ describe("Organization", () => {
       expect(res.length).toBe(amountOfRepositories);
       res.forEach((repo, index) => {
         expect(repo.name).toBe(`Test ${expectedRepos[index]}`);
+      });
+    });
+  });
+
+  describe("#orderRepositoriesAlphabetically", () => {
+    beforeEach(() => {
+      organization = new Organization(ORG);
+      organization.parseRepositories(fixtureTitlesGithubResponse);
+    });
+
+    test("should return an array of repositories", () => {
+      const res = Organization.orderRepositoriesAlphabetically(
+        organization.repositories,
+      );
+
+      expect(res).toBeInstanceOf(Array);
+
+      res.forEach((repo) => {
+        expect(repo).toBeInstanceOf(Repository);
+      });
+    });
+
+    test("should not modify repositories stored in memory", () => {
+      const currentSize = organization.repositories.length;
+      const currentRepos = organization.repositories.slice();
+
+      const res = Organization.orderRepositoriesAlphabetically(
+        organization.repositories,
+      );
+
+      expect(organization.repositories).toEqual(currentRepos);
+      expect(res).not.toEqual(currentRepos);
+    });
+
+    test("should sort the repositories given their name", () => {
+      const res = Organization.orderRepositoriesAlphabetically(
+        organization.repositories,
+      );
+      const expectedOrder = [
+        "asdf",
+        "hapistrano",
+        "hello-world",
+        "test-repository",
+        "test-repository-2",
+        "zebra",
+      ];
+
+      res.forEach((repo, index) => {
+        expect(repo.name).toBe(expectedOrder[index]);
+      });
+    });
+  });
+
+  describe("#removeRepositoryStartingWith", () => {
+    beforeEach(() => {
+      organization = new Organization(ORG);
+      organization.parseRepositories(fixtureTitlesGithubResponse);
+    });
+
+    test("should return an array of repositories", () => {
+      const res = Organization.removeRepositoryStartingWith(
+        organization.repositories,
+        "h",
+      );
+
+      expect(res).toBeInstanceOf(Array);
+
+      res.forEach((repo) => {
+        expect(repo).toBeInstanceOf(Repository);
+      });
+    });
+
+    test("should not modify repositories stored in memory", () => {
+      const currentSize = organization.repositories.length;
+      const currentRepos = organization.repositories.slice();
+
+      const res = Organization.removeRepositoryStartingWith(
+        organization.repositories,
+        "h",
+      );
+
+      expect(organization.repositories).toEqual(currentRepos);
+      expect(res).not.toEqual(currentRepos);
+    });
+
+    test("should be case insensitive", () => {
+      const res = Organization.removeRepositoryStartingWith(
+        organization.repositories,
+        "h",
+      );
+
+      const resCased = Organization.removeRepositoryStartingWith(
+        organization.repositories,
+        "H",
+      );
+
+      expect(res).toEqual(resCased);
+    });
+
+    test("should remove repository with name starting with passed prefix", () => {
+      const res = Organization.removeRepositoryStartingWith(
+        organization.repositories,
+        "h",
+      );
+      const expectedOrder = [
+        "test-repository",
+        "test-repository-2",
+        "asdf",
+        "zebra",
+      ];
+
+      res.forEach((repo, index) => {
+        expect(repo.name).toBe(expectedOrder[index]);
+      });
+    });
+  });
+
+  describe("#orderAlphabeticallyAndRemoveStartingWith", () => {
+    beforeEach(() => {
+      organization = new Organization(ORG);
+      organization.parseRepositories(fixtureTitlesGithubResponse);
+    });
+
+    test("should return an array of repositories", () => {
+      const res = Organization.orderAlphabeticallyAndRemoveStartingWith(
+        organization.repositories,
+        "h",
+      );
+
+      expect(res).toBeInstanceOf(Array);
+
+      res.forEach((repo) => {
+        expect(repo).toBeInstanceOf(Repository);
+      });
+    });
+
+    test("should not modify repositories stored in memory", () => {
+      const currentSize = organization.repositories.length;
+      const currentRepos = organization.repositories.slice();
+
+      const res = Organization.orderAlphabeticallyAndRemoveStartingWith(
+        organization.repositories,
+        "h",
+      );
+
+      expect(organization.repositories).toEqual(currentRepos);
+      expect(res).not.toEqual(currentRepos);
+    });
+
+    test("should be a composition of #orderRepositoriesAlphabetically and #removeRepositoryStartingWith", () => {
+      const res = Organization.orderAlphabeticallyAndRemoveStartingWith(
+        organization.repositories,
+        "h",
+      );
+      const expectedOrder = [
+        "asdf",
+        "test-repository",
+        "test-repository-2",
+        "zebra",
+      ];
+
+      res.forEach((repo, index) => {
+        expect(repo.name).toBe(expectedOrder[index]);
       });
     });
   });

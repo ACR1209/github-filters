@@ -6,6 +6,7 @@ const ORG = "stackbuilders";
 const MIN_STARS = 5;
 const LAST_UPDATED_COUNT = 5;
 const HEAD_COUNT = 5;
+const PREFIX = "h";
 
 const stackBuilders = new Organization(ORG);
 GithubAdapter.fetchAllOrgRepositories(ORG).then((data) => {
@@ -21,6 +22,7 @@ GithubAdapter.fetchAllOrgRepositories(ORG).then((data) => {
           MIN_STARS,
           LAST_UPDATED_COUNT,
           HEAD_COUNT,
+          PREFIX,
         );
 
         if (answer === "exit") {
@@ -52,6 +54,13 @@ GithubAdapter.fetchAllOrgRepositories(ORG).then((data) => {
             console.log(
               mostPopularRepositories.map((repo) => repo.toString()).join("\n"),
             );
+            break;
+          case "listAndRemove":
+            const repos = Organization.orderAlphabeticallyAndRemoveStartingWith(
+              stackBuilders.repositories,
+              PREFIX,
+            );
+            console.log(repos.map((repo) => repo.toString()).join("\n"));
             break;
         }
 

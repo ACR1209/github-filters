@@ -56,6 +56,29 @@ class Organization {
   getMostPopularRepositories(amountOfRepositories: number) {
     return this.orderRepositoriesByStars().slice(0, amountOfRepositories);
   }
+
+  static orderRepositoriesAlphabetically(repositories: Repository[]) {
+    return repositories.toSorted((a, b) => a.name.localeCompare(b.name));
+  }
+
+  static removeRepositoryStartingWith(
+    repositories: Repository[],
+    prefix: string,
+  ) {
+    return repositories.filter(
+      (repo) => !repo.name.toLowerCase().startsWith(prefix.toLowerCase()),
+    );
+  }
+
+  static orderAlphabeticallyAndRemoveStartingWith(
+    repositories: Repository[],
+    prefix: string,
+  ) {
+    return this.removeRepositoryStartingWith(
+      this.orderRepositoriesAlphabetically(repositories),
+      prefix,
+    );
+  }
 }
 
 export default Organization;

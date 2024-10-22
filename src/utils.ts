@@ -18,6 +18,7 @@ export const mainInquirerSelect = (
   MIN_STARS: number,
   LAST_UPDATED_COUNT: number,
   HEAD_COUNT: number,
+  PREFIX: string,
 ) =>
   select({
     message: "Select an action to do",
@@ -41,6 +42,11 @@ export const mainInquirerSelect = (
         name: `Get the top ${HEAD_COUNT} repositories with more stars`,
         value: "mostPopularRepositories",
         description: `Get the top ${HEAD_COUNT} repositories with more stars from ${ORG}`,
+      },
+      {
+        name: `List all repositories alphabetically and remove all repositories starting with '${PREFIX}'`,
+        value: "listAndRemove",
+        description: `List all repositories alphabetically and remove all repositories starting with '${PREFIX}' from ${ORG}`,
       },
       new Separator(),
       {
